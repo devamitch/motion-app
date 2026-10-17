@@ -1,10 +1,8 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
-import Animated, {
-  FadeIn, SlideInDown, useAnimatedStyle,
-} from 'react-native-reanimated';
 import { CameraView as ExpoCameraView } from 'expo-camera';
+import React from 'react';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeIn, SlideInDown, useAnimatedStyle } from 'react-native-reanimated';
 import { OverlayCanvas } from './OverlayCanvas';
 
 const { width, height } = Dimensions.get('window');
@@ -23,8 +21,16 @@ interface CameraViewProps {
 }
 
 export const CameraView: React.FC<CameraViewProps> = ({
-  mode, poses, feedback, score, bpm, fps, isCorrect,
-  pulseScale, scoreScale, onExit,
+  mode,
+  poses,
+  feedback,
+  score,
+  bpm,
+  fps,
+  isCorrect,
+  pulseScale,
+  scoreScale,
+  onExit,
 }) => {
   const scoreStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scoreScale.value }],
@@ -59,7 +65,9 @@ export const CameraView: React.FC<CameraViewProps> = ({
         >
           <View style={styles.row}>
             <View style={styles.textWrap}>
-              <Text style={[styles.modeTag, isCorrect && { color: 'rgba(5,5,16,0.5)' }]}>{mode.toUpperCase()}</Text>
+              <Text style={[styles.modeTag, isCorrect && { color: 'rgba(5,5,16,0.5)' }]}>
+                {mode.toUpperCase()}
+              </Text>
               <Text style={[styles.fbText, isCorrect && { color: '#050510' }]}>{feedback}</Text>
             </View>
             <Animated.View style={[styles.scoreCircle, scoreStyle]}>
@@ -69,8 +77,17 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </View>
           {bpm > 0 && (
             <View style={styles.rhythmRow}>
-              <View style={[styles.rhythmBar, { backgroundColor: isCorrect ? '#050510' : '#FF3B5C' }]} />
-              <Text style={{ color: isCorrect ? '#050510' : '#FF3B5C', fontSize: 11, fontWeight: '900', letterSpacing: 1.5 }}>
+              <View
+                style={[styles.rhythmBar, { backgroundColor: isCorrect ? '#050510' : '#FF3B5C' }]}
+              />
+              <Text
+                style={{
+                  color: isCorrect ? '#050510' : '#FF3B5C',
+                  fontSize: 11,
+                  fontWeight: '900',
+                  letterSpacing: 1.5,
+                }}
+              >
                 {bpm} BPM
               </Text>
             </View>
@@ -83,10 +100,31 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
-  camera: { ...StyleSheet.absoluteFillObject },
-  pulseRing: { position: 'absolute', width: 220, height: 220, borderRadius: 110, borderWidth: 6, top: height / 2 - 110, left: width / 2 - 110 },
-  topHud: { position: 'absolute', top: 60, left: 24, right: 24, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  exitBtn: { backgroundColor: 'rgba(255,59,92,0.8)', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 22 },
+  camera: { ...StyleSheet.absoluteFill },
+  pulseRing: {
+    position: 'absolute',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    borderWidth: 6,
+    top: height / 2 - 110,
+    left: width / 2 - 110,
+  },
+  topHud: {
+    position: 'absolute',
+    top: 60,
+    left: 24,
+    right: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  exitBtn: {
+    backgroundColor: 'rgba(255,59,92,0.8)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 22,
+  },
   exitText: { color: '#FFF', fontWeight: '900', fontSize: 12, letterSpacing: 1 },
   fpsBadge: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 16, overflow: 'hidden' },
   fpsText: { color: '#00D4FF', fontWeight: '900', fontSize: 11, letterSpacing: 1 },
@@ -96,9 +134,24 @@ const styles = StyleSheet.create({
   cardCorrect: { borderColor: '#00FF88' },
   row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   textWrap: { flex: 1, marginRight: 16 },
-  modeTag: { fontSize: 10, fontWeight: '800', letterSpacing: 3, color: 'rgba(255,255,255,0.35)', marginBottom: 6 },
+  modeTag: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 3,
+    color: 'rgba(255,255,255,0.35)',
+    marginBottom: 6,
+  },
   fbText: { fontSize: 22, fontWeight: '900', color: '#FFF', lineHeight: 28 },
-  scoreCircle: { width: 72, height: 72, borderRadius: 36, backgroundColor: 'rgba(255,255,255,0.06)', justifyContent: 'center', alignItems: 'center', borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)' },
+  scoreCircle: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
+  },
   scoreVal: { fontSize: 28, fontWeight: '900', color: '#FFF' },
   scoreLbl: { fontSize: 9, fontWeight: '800', color: 'rgba(255,255,255,0.3)' },
   rhythmRow: { marginTop: 20, flexDirection: 'row', alignItems: 'center' },

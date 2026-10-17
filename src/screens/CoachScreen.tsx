@@ -1,18 +1,23 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, StatusBar, TouchableOpacity, Dimensions } from 'react-native';
-import { BlurView } from 'expo-blur';
-import Animated, {
-  useSharedValue, useAnimatedStyle, withSequence, withSpring, withTiming,
-  SlideInDown, FadeIn,
-} from 'react-native-reanimated';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { BlurView } from 'expo-blur';
 import { CameraView as ExpoCameraView, useCameraPermissions } from 'expo-camera';
+import { useEffect, useRef, useState } from 'react';
+import { Dimensions, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, {
+  FadeIn,
+  SlideInDown,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 
 import { OverlayCanvas } from '../components/OverlayCanvas';
 import { BoxingEngine } from '../engine/boxingEngine';
 import { DanceEngine } from '../engine/danceEngine';
 import { rhythmEngine } from '../engine/rhythmEngine';
-import { useCoachStore, CoachMode } from '../store/coachStore';
+import { CoachMode, useCoachStore } from '../store/coachStore';
 import { useHistoryStore } from '../store/historyStore';
 
 const { width, height } = Dimensions.get('window');
@@ -58,13 +63,15 @@ export default function CoachScreen() {
 
       // Generate slightly varying demo poses
       const jitter = () => (Math.random() - 0.5) * 20;
-      const demoPoses = [{
-        keypoints: DEMO_KEYPOINTS.map(kp => ({
-          ...kp,
-          x: kp.x + jitter(),
-          y: kp.y + jitter(),
-        })),
-      }];
+      const demoPoses = [
+        {
+          keypoints: DEMO_KEYPOINTS.map((kp) => ({
+            ...kp,
+            x: kp.x + jitter(),
+            y: kp.y + jitter(),
+          })),
+        },
+      ];
 
       if (mode === 'boxing') {
         const result = BoxingEngine.analyze(demoPoses, demoPoses, dt);
@@ -86,7 +93,10 @@ export default function CoachScreen() {
       // Pulse animation on correct detection
       if (isCorrect) {
         scoreScale.value = withSequence(withSpring(1.25), withSpring(1));
-        pulse.value = withSequence(withTiming(1.4, { duration: 80 }), withTiming(1, { duration: 250 }));
+        pulse.value = withSequence(
+          withTiming(1.4, { duration: 80 }),
+          withTiming(1, { duration: 250 }),
+        );
       }
     }, 100);
 
@@ -96,7 +106,9 @@ export default function CoachScreen() {
       if (score > 0) {
         addScore(score);
         useHistoryStore.getState().addSession({
-          mode, feedback, timestamp: Date.now(),
+          mode,
+          feedback,
+          timestamp: Date.now(),
         });
       }
     };
@@ -122,15 +134,10 @@ export default function CoachScreen() {
       <StatusBar hidden />
 
       {/* Camera Layer */}
-      {permission?.granted && (
-        <ExpoCameraView style={styles.camera} facing="front" />
-      )}
+      {permission?.granted && <ExpoCameraView style={styles.camera} facing="front" />}
 
       {/* Skeleton Overlay */}
-      <OverlayCanvas
-        poses={[{ keypoints: DEMO_KEYPOINTS }]}
-        mode={mode}
-      />
+      <OverlayCanvas poses={[{ keypoints: DEMO_KEYPOINTS }]} mode={mode} />
 
       {/* Pulse Ring */}
       <Animated.View style={[styles.pulseRing, pulseStyle]} />
@@ -161,14 +168,18 @@ export default function CoachScreen() {
                 {feedback}
               </Text>
             </View>
-            <Animated.View style={[styles.scoreCircle, scoreAnimStyle, isCorrect && styles.scoreCircleCorrect]}>
+            <Animated.View
+              style={[styles.scoreCircle, scoreAnimStyle, isCorrect && styles.scoreCircleCorrect]}
+            >
               <Text style={[styles.scoreVal, isCorrect && styles.scoreValCorrect]}>{score}</Text>
               <Text style={[styles.scoreLbl, isCorrect && styles.scoreLblCorrect]}>PTS</Text>
             </Animated.View>
           </View>
           {bpm > 0 && (
             <View style={styles.rhythmRow}>
-              <View style={[styles.rhythmBar, { backgroundColor: isCorrect ? '#050510' : '#FF3B5C' }]} />
+              <View
+                style={[styles.rhythmBar, { backgroundColor: isCorrect ? '#050510' : '#FF3B5C' }]}
+              />
               <Text style={[styles.bpmText, { color: isCorrect ? '#050510' : '#FF3B5C' }]}>
                 {bpm} BPM
               </Text>
@@ -182,17 +193,29 @@ export default function CoachScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#000' },
-  camera: { ...StyleSheet.absoluteFillObject },
+  camera: { ...StyleSheet.absoluteFill },
   pulseRing: {
-    position: 'absolute', width: 220, height: 220, borderRadius: 110,
-    borderWidth: 6, top: height / 2 - 110, left: width / 2 - 110,
+    position: 'absolute',
+    width: 220,
+    height: 220,
+    borderRadius: 110,
+    borderWidth: 6,
+    top: height / 2 - 110,
+    left: width / 2 - 110,
   },
   topHud: {
-    position: 'absolute', top: 60, left: 24, right: 24,
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+    position: 'absolute',
+    top: 60,
+    left: 24,
+    right: 24,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   exitBtn: {
-    backgroundColor: 'rgba(255,59,92,0.8)', paddingHorizontal: 20, paddingVertical: 10,
+    backgroundColor: 'rgba(255,59,92,0.8)',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
     borderRadius: 22,
   },
   exitText: { color: '#FFF', fontWeight: '900', fontSize: 12, letterSpacing: 1 },
@@ -204,14 +227,25 @@ const styles = StyleSheet.create({
   correctCard: { borderColor: '#00FF88' },
   feedbackRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   feedbackTextArea: { flex: 1, marginRight: 16 },
-  modeTag: { fontSize: 10, fontWeight: '800', letterSpacing: 3, color: 'rgba(255,255,255,0.35)', marginBottom: 6 },
+  modeTag: {
+    fontSize: 10,
+    fontWeight: '800',
+    letterSpacing: 3,
+    color: 'rgba(255,255,255,0.35)',
+    marginBottom: 6,
+  },
   modeTagCorrect: { color: 'rgba(5,5,16,0.5)' },
   feedbackText: { fontSize: 22, fontWeight: '900', color: '#FFF', lineHeight: 28 },
   feedbackTextCorrect: { color: '#050510' },
   scoreCircle: {
-    width: 72, height: 72, borderRadius: 36,
-    backgroundColor: 'rgba(255,255,255,0.06)', justifyContent: 'center', alignItems: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.1)',
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(255,255,255,0.06)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.1)',
   },
   scoreCircleCorrect: { borderColor: '#050510', backgroundColor: 'rgba(5,5,16,0.12)' },
   scoreVal: { fontSize: 28, fontWeight: '900', color: '#FFF' },
